@@ -129,10 +129,10 @@ class BWidget {
   setButtonPosition(button){
     const placement = this.config?.placement
     if(placement){
-      if(placement.contains('right')) button.style.right = '64px'
-      if(placement.contains('top')) button.style.top = '64px'
-      if(placement.contains('left')) button.style.left = '64px'
-      if(placement.contains('bottom')) button.style.bottom = '64px'
+      if(placement.includes('right')) button.style.right = '64px'
+      if(placement.includes('top')) button.style.top = '64px'
+      if(placement.includes('left')) button.style.left = '64px'
+      if(placement.includes('bottom')) button.style.bottom = '64px'
     }else{      
       button.style.bottom = '64px'
       button.style.right = '64px'
