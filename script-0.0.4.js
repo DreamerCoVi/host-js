@@ -207,6 +207,7 @@ class BWidget {
     if(typeof param === 'object'){/* если прокинули конфиг */
       this.config = param
     }   
+    console.log('this.config', this.config)
     this.makeButton()
   }
 }
