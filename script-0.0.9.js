@@ -88,14 +88,14 @@ class BWidget {
 
   setWidgetPosition(wrapper){
     const position = this.config?.overlayPlacement || 'right'
-    wrapper.styles.top = 0
-    if(position) wrapper.styles[position] = 0
+    wrapper.style.top = 0
+    if(position) wrapper.style[position] = 0
   }
 
   setInnerPosition(inner){
     const position = this.config?.overlayPlacement || 'right'
-    inner.styles.top = 0
-    if(position) inner.styles[position] = 0
+    inner.style.top = 0
+    if(position) inner.style[position] = 0
   }
 
   makeCollapsedWidget(state){
@@ -106,7 +106,7 @@ class BWidget {
     
     const inner = document.createElement('div')
     inner.classList.add('by-widget__inner')
-    
+
     this.setInnerPosition(inner)
 
     inner.appendChild(this.makeIFrame())
