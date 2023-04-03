@@ -50,8 +50,6 @@ const styles = `
     z-index: 999;
     background: white;
     position: fixed;
-    right: 0!important;
-    top: 0!important;
     height: 100vh;
 }
 
@@ -90,10 +88,14 @@ class BWidget {
 
   setWidgetPosition(wrapper){
     const position = this.config?.overlayPlacement || 'right'
-
     wrapper.styles.top = 0
-
     if(position) wrapper.styles[position] = 0
+  }
+
+  setInnerPosition(inner){
+    const position = this.config?.overlayPlacement || 'right'
+    inner.styles.top = 0
+    if(position) inner.styles[position] = 0
   }
 
   makeCollapsedWidget(state){
@@ -104,6 +106,8 @@ class BWidget {
     
     const inner = document.createElement('div')
     inner.classList.add('by-widget__inner')
+    
+    this.setInnerPosition(inner)
 
     inner.appendChild(this.makeIFrame())
 
@@ -147,7 +151,7 @@ class BWidget {
 
       const button = document.createElement('button')
       button.setAttribute('id', 'bwidget-button')
-      button.appendChild(document.createTextNode('Бронь'))
+      button.appendChild(document.createTextNode('Бронировать'))
       this.setButtonPosition(button)
 
       const defaultColor = '#FF6666'
@@ -156,7 +160,7 @@ class BWidget {
       button.style.borderRadius = '100%'
       button.style.width = '100px'
       button.style.height = '100px'
-      button.style.fontSize = '16px'
+      button.style.fontSize = '13px'
       button.style.fontWeight = '600'
       button.style.cursor = 'pointer'
       button.style.border = 'none'
