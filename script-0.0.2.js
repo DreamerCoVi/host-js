@@ -189,8 +189,11 @@ class BWidget {
 window.__BWidget = new BWidget()
 
 
-console.log('mounted', document.readyState)
-
-window.onload = () => {
+if(document.readyState === 'complete'){
   window.__BWidget.init()
+}else{  
+  window.onload = () => {
+    window.__BWidget.init()
+  }
 }
+
