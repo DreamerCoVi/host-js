@@ -11,6 +11,7 @@ const styles = `
 
 .by-widget-opened {
     opacity: 1;
+    z-index: 999;
     width: 500px;
     transition: .3s;
     overflow: hidden
@@ -159,6 +160,7 @@ class BWidget {
       button.style.fontWeight = '600'
       button.style.cursor = 'pointer'
       button.style.border = 'none'
+      button.style.zIndex = 3
       button.style.background = this.config?.buttonColor || defaultColor
       button.style.color = "white"
 
