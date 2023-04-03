@@ -189,7 +189,7 @@ class BWidget {
 window.__BWidget = new BWidget()
 
 
-console.log('mounted')
+console.log('mounted', document.readyState)
 
 window.onload = () => {
   window.__BWidget.init()
