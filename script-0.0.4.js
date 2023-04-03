@@ -5,8 +5,6 @@ const styles = `
 .by-widget {
     display: block;
     position: fixed;
-    right: 0;
-    top: 0;
     height: 100vh;
     transition: .3s;
 }
@@ -64,14 +62,7 @@ const styles = `
 `
 
 class BWidget {
-  options = {
-    primaryColor: '',
-    activeAnimation: true,
-    buttonPlacement: 'right-bottom',
-    buttonColor: 'rgb(255, 102, 102)',
-    overlayPlacement: 'right',
-  }
-  
+  config = null  
   uuid = ''
 
   makeBackdrop(){
@@ -91,9 +82,17 @@ class BWidget {
 
     iframe.setAttribute('frameborder', "0")
     iframe.setAttribute('allowtransparency', "true")
-    iframe.setAttribute('src', 'http://localhost:3000/widget')
+    iframe.setAttribute('src', `http://${this.config?.slug ? this.config.slug + '.' : ''}localhost:3000/widget`)
 
     return iframe
+  }
+
+  setWidgetPosition(wrapper){
+    const position = this.config?.overlayPlacement || 'right'
+
+    wrapper.styles.top = 0
+
+    if(position) wrapper.styles[position] = 0
   }
 
   makeCollapsedWidget(state){
@@ -122,6 +121,24 @@ class BWidget {
     document.head.appendChild(ss)
   }
 
+  hex2rgba(hex, alpha = 1) {
+    const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  setButtonPosition(button){
+    const placement = this.config?.placement
+    if(placement){
+      if(placement.contains('right')) button.style.right = '64px'
+      if(placement.contains('top')) button.style.top = '64px'
+      if(placement.contains('left')) button.style.left = '64px'
+      if(placement.contains('bottom')) button.style.bottom = '64px'
+    }else{      
+      button.style.bottom = '64px'
+      button.style.right = '64px'
+    }
+  }
+
   makeButton(){
     if(!window.location.pathname.includes('widget')){
       this.makeStyles()
@@ -130,10 +147,11 @@ class BWidget {
       const button = document.createElement('button')
       button.setAttribute('id', 'bwidget-button')
       button.appendChild(document.createTextNode('Бронь'))
+      this.setButtonPosition(button)
+
+      const defaultColor = '#FF6666'
 
       button.style.position = 'absolute'
-      button.style.bottom = '64px'
-      button.style.right = '64px'
       button.style.borderRadius = '100%'
       button.style.width = '100px'
       button.style.height = '100px'
@@ -141,15 +159,17 @@ class BWidget {
       button.style.fontWeight = '600'
       button.style.cursor = 'pointer'
       button.style.border = 'none'
-      button.style.background = '#FF6666'
+      button.style.background = this.config?.buttonColor || defaultColor
       button.style.color = "white"
 
-      button.animate({
-          boxShadow: [ '0 0 0 0 rgb(255, 102, 102, .8)', '0 0 0 20px rgba(255, 102, 102, 0)', '0 0 0 0 rgba(255, 102, 102, 0)' ],
+      if(!this.config || this.config?.showAnimation){
+        button.animate({
+          boxShadow: [ `0 0 0 0 ${this.hex2rgba(this.config?.buttonColor || defaultColor, 0.8)}`, `0 0 0 20px ${this.hex2rgba(this.config?.buttonColor || defaultColor, 0)}`, `0 0 0 0 ${this.hex2rgba(this.config?.buttonColor || defaultColor, 0)}` ],
         }, {
           duration: 2000,
           iterations: Infinity
         })
+      }
 
       const toggleWidget = () => {
           const collapseWidget = document.getElementById("by-widget")
@@ -179,21 +199,24 @@ class BWidget {
     if(widget) widget.remove()
   }
 
-  async init(uuid='e4beb2c6-41d9-4994-a848-f4529cc72a44'){
+  async init(param='e4beb2c6-41d9-4994-a848-f4529cc72a44'){
     this.cleanButton()
-    const resp = await fetch(`http://d9.tripvenue.ru/booking-form/${uuid}/widgetJS`)
+    if(typeof param === 'string'){
+      const resp = await fetch(`http://d9.tripvenue.ru/booking-form/${param}/widgetJS`)
+    }
+    if(typeof param === 'object'){/* если прокинули конфиг */
+      this.config = param
+    }   
     this.makeButton()
   }
 }
 
 window.__BWidget = new BWidget()
 
-
 if(document.readyState === 'complete'){
-  window.__BWidget.init()
-}else{  
-  window.onload = () => {
-    window.__BWidget.init()
-  }
+  /* window.__BWidget.init() */
 }
 
+window.onload = () => {
+  window.__BWidget.init()
+}
